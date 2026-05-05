@@ -13,6 +13,8 @@ type ProductView = {
   stock: number;
   featured: boolean;
   category: { name: string; slug: string };
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 };
 
 const fallbackCatBySlug = new Map(SEED_CATEGORIES.map((c) => [c.slug, c]));
@@ -67,6 +69,8 @@ export async function getProducts(opts?: {
       stock: r.stock,
       featured: r.featured,
       category: { name: r.category.name, slug: r.category.slug },
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
     }));
   });
 
@@ -97,6 +101,8 @@ export async function getProductBySlug(slug: string): Promise<ProductView | null
       stock: r.stock,
       featured: r.featured,
       category: { name: r.category.name, slug: r.category.slug },
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
     };
   });
 

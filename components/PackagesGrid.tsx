@@ -1,72 +1,12 @@
 import Link from "next/link";
 import { PackageVisual } from "@/components/PackageVisual";
-
-type Variant = { channels: string; price: number; oldPrice: number };
-
-type Pkg = {
-  cameras: number;
-  title: string;
-  subtitle: string;
-  hdd: string;
-  dvr: Variant;
-  nvr: Variant;
-  highlight?: boolean;
-  tag?: string;
-};
-
-const PACKAGES: Pkg[] = [
-  {
-    cameras: 4,
-    title: "แพ็คเกจ 4 ตัว",
-    subtitle: "เหมาะกับบ้านหรือร้านขนาดเล็ก",
-    hdd: "HDD 1TB",
-    dvr: { channels: "DVR 4CH", price: 8990, oldPrice: 12500 },
-    nvr: { channels: "NVR 4CH (PoE)", price: 12900, oldPrice: 17900 },
-    tag: "เริ่มต้น",
-  },
-  {
-    cameras: 8,
-    title: "แพ็คเกจ 8 ตัว",
-    subtitle: "เหมาะกับบ้านใหญ่หรือร้านค้า",
-    hdd: "HDD 1TB",
-    dvr: { channels: "DVR 8CH", price: 14900, oldPrice: 19500 },
-    nvr: { channels: "NVR 8CH (PoE)", price: 20900, oldPrice: 27500 },
-    highlight: true,
-    tag: "ขายดี",
-  },
-  {
-    cameras: 12,
-    title: "แพ็คเกจ 12 ตัว",
-    subtitle: "เหมาะกับสำนักงานหรือธุรกิจ",
-    hdd: "HDD 2TB",
-    dvr: { channels: "DVR 16CH", price: 22900, oldPrice: 29500 },
-    nvr: { channels: "NVR 16CH (PoE)", price: 31900, oldPrice: 41500 },
-    tag: "ธุรกิจ",
-  },
-  {
-    cameras: 16,
-    title: "แพ็คเกจ 16 ตัว",
-    subtitle: "เหมาะกับโรงงานหรือโกดัง",
-    hdd: "HDD 2TB",
-    dvr: { channels: "DVR 16CH", price: 29900, oldPrice: 39500 },
-    nvr: { channels: "NVR 16CH (PoE)", price: 41900, oldPrice: 54500 },
-    tag: "องค์กร",
-  },
-];
-
-const SPECS = [
-  { label: "2MP", sub: "FHD 1080p" },
-  { label: "IP67", sub: "กันน้ำ" },
-  { label: "IR 30m", sub: "อินฟราเรด" },
-  { label: "WDR", sub: "ภาพคมชัด" },
-];
-
-const FREE_ITEMS = [
-  { label: "สาย RG6 + ไฟ 100m" },
-  { label: "Power Supply" },
-  { label: "หัวต่อ BNC ครบชุด" },
-  { label: "ติดตั้งฟรีในกรุงเทพฯ" },
-];
+import {
+  PACKAGES,
+  SPECS,
+  FREE_ITEMS,
+  type InstallPackage,
+  type Variant,
+} from "@/lib/packages";
 
 export function PackagesGrid() {
   return (
@@ -85,27 +25,23 @@ export function PackagesGrid() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {PACKAGES.map((p) => (
-          <PackageCard key={p.cameras} pkg={p} />
+          <PackageCard key={p.slug} pkg={p} />
         ))}
       </div>
 
+      {/* Premium "ask for custom quote" strip */}
       <div className="relative mt-10 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-950 via-brand-950 to-slate-900 p-1 shadow-2xl shadow-brand-900/30">
-        {/* Animated gradient ring */}
         <div className="pointer-events-none absolute -inset-1 rounded-[inherit] opacity-60 [background:conic-gradient(from_var(--angle),transparent_0%,#3b82f6_15%,transparent_30%,transparent_55%,#22d3ee_70%,transparent_85%)] [animation:spin_8s_linear_infinite] [--angle:0deg]" />
         <div className="relative rounded-[calc(theme(borderRadius.3xl)-4px)] bg-gradient-to-br from-slate-950 via-slate-900 to-brand-950 p-6 sm:p-8">
-          {/* Decorative blurs */}
           <div className="pointer-events-none absolute -left-20 -top-20 h-56 w-56 rounded-full bg-brand-500/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-cyan-500/15 blur-3xl" />
-
           <div className="relative flex flex-col items-center gap-5 text-center md:flex-row md:items-center md:justify-between md:text-left">
             <div className="flex items-start gap-4">
-              {/* Custom icon */}
               <div className="hidden h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-600/40 sm:flex">
                 <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M12 2 L14 8 L20 9 L15.5 13 L17 19 L12 16 L7 19 L8.5 13 L4 9 L10 8 Z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-
               <div>
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-yellow-300">
                   <span className="relative flex h-1.5 w-1.5">
@@ -126,7 +62,6 @@ export function PackagesGrid() {
                 </p>
               </div>
             </div>
-
             <div className="flex flex-col items-center gap-2 sm:flex-row">
               <a
                 href="https://line.me/R/ti/p/@trustcam"
@@ -157,13 +92,14 @@ export function PackagesGrid() {
   );
 }
 
-function PackageCard({ pkg }: { pkg: Pkg }) {
+function PackageCard({ pkg }: { pkg: InstallPackage }) {
   const dvrDiscount = Math.round(
     ((pkg.dvr.oldPrice - pkg.dvr.price) / pkg.dvr.oldPrice) * 100
   );
 
   return (
-    <div
+    <Link
+      href={`/packages/${pkg.slug}`}
       className={`group relative flex flex-col overflow-hidden rounded-3xl border ${
         pkg.highlight
           ? "border-brand-600 bg-gradient-to-b from-white to-brand-50 shadow-xl shadow-brand-600/15"
@@ -177,7 +113,6 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
       )}
 
       <div className="flex flex-col p-5 sm:p-6">
-        {/* Header */}
         <div className="flex items-start justify-between">
           <div>
             {pkg.tag && !pkg.highlight && (
@@ -185,7 +120,7 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
                 {pkg.tag}
               </span>
             )}
-            <h3 className="mt-1 text-lg font-extrabold text-slate-900">
+            <h3 className="mt-1 text-lg font-extrabold text-slate-900 group-hover:text-brand-700">
               {pkg.title}
             </h3>
             <p className="mt-0.5 text-xs text-slate-500">{pkg.subtitle}</p>
@@ -195,7 +130,6 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
           </span>
         </div>
 
-        {/* Camera + NVR illustration */}
         <div className="relative mt-5 overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-3">
           <div className="absolute inset-0 opacity-40 [background-image:radial-gradient(circle_at_50%_30%,rgba(59,130,246,0.25),transparent_60%)]" />
           <div className="relative">
@@ -210,66 +144,37 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
           </div>
         </div>
 
-        {/* What's included */}
         <ul className="mt-5 space-y-2 text-sm">
-          <Item bold>
-            <span className="text-slate-700">กล้อง 2MP IR Bullet × </span>
-            <span className="font-bold">{pkg.cameras} ตัว</span>
-          </Item>
-          <Item bold>
-            <span className="text-slate-700">{pkg.hdd}</span>
-          </Item>
-          <Item bold>
-            <span className="text-slate-700">เลือกได้ DVR หรือ NVR</span>
-          </Item>
+          <Item><span className="text-slate-700">กล้อง 2MP IR Bullet × </span><span className="font-bold">{pkg.cameras} ตัว</span></Item>
+          <Item><span className="text-slate-700">{pkg.hdd}</span></Item>
+          <Item><span className="text-slate-700">DVR หรือ NVR</span></Item>
         </ul>
 
-        {/* Specs row */}
         <div className="mt-4 grid grid-cols-4 gap-1.5">
           {SPECS.map((s) => (
-            <div
-              key={s.label}
-              className="rounded-xl bg-slate-50 px-1.5 py-2 text-center"
-            >
-              <div className="text-[11px] font-extrabold text-brand-700">
-                {s.label}
-              </div>
+            <div key={s.label} className="rounded-xl bg-slate-50 px-1.5 py-2 text-center">
+              <div className="text-[11px] font-extrabold text-brand-700">{s.label}</div>
               <div className="text-[9px] text-slate-500">{s.sub}</div>
             </div>
           ))}
         </div>
 
-        {/* Free items */}
         <div className="mt-4 rounded-2xl border border-dashed border-red-300 bg-red-50/50 p-3">
           <div className="text-[11px] font-extrabold uppercase tracking-wider text-red-600">
             ฟรี! ของแถมครบชุด
           </div>
           <ul className="mt-1.5 space-y-1">
             {FREE_ITEMS.map((f) => (
-              <li
-                key={f.label}
-                className="flex items-center gap-1.5 text-[12px] text-slate-700"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-3.5 w-3.5 flex-shrink-0 text-red-500"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                >
-                  <path
-                    d="M5 12l5 5L20 7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+              <li key={f} className="flex items-center gap-1.5 text-[12px] text-slate-700">
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" strokeWidth="3">
+                  <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                {f.label}
+                {f}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Price comparison: DVR vs NVR */}
         <div className="mt-5 space-y-2">
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
             เลือกแบบที่ใช่
@@ -279,31 +184,14 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
           <p className="pt-1 text-[10px] text-slate-500">รวมติดตั้ง · VAT แล้ว</p>
         </div>
 
-        {/* CTAs */}
-        <div className="mt-4 flex gap-2">
-          <a
-            href="https://line.me/R/ti/p/@trustcam"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[#06C755] py-2.5 text-sm font-bold text-white shadow-lg shadow-[#06C755]/25 transition active:scale-95"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-              <path d="M19.4 10.6c0-3.4-3.4-6.1-7.6-6.1S4.2 7.2 4.2 10.6c0 3 2.7 5.5 6.4 6 .2 0 .6.2.7.4.1.2.1.5 0 .7l-.1.6c0 .2-.2.7.6.4 1.2-.5 6.6-3.9 7-7.1z" />
-            </svg>
-            สั่งซื้อ
-          </a>
-          <Link
-            href="/contact"
-            aria-label="ดูรายละเอียดเพิ่มเติม"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white transition active:scale-95"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </Link>
+        <div className="mt-5 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-slate-900 py-3 text-sm font-bold text-white transition group-hover:bg-brand-700">
+          ดูรายละเอียดแพ็คเกจ
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -341,9 +229,7 @@ function PriceRow({
         </div>
         <div className="min-w-0">
           <div className="text-[11px] font-semibold text-slate-700">{sub}</div>
-          <div className="text-[10px] text-slate-400 line-through">
-            ฿{oldPrice}
-          </div>
+          <div className="text-[10px] text-slate-400 line-through">฿{oldPrice}</div>
         </div>
       </div>
       <div
@@ -357,22 +243,10 @@ function PriceRow({
   );
 }
 
-function Item({
-  children,
-  bold,
-}: {
-  children: React.ReactNode;
-  bold?: boolean;
-}) {
+function Item({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2">
-      <svg
-        viewBox="0 0 24 24"
-        className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={bold ? "2.8" : "2.2"}
-      >
+      <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600" fill="none" stroke="currentColor" strokeWidth="2.8">
         <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <span>{children}</span>
