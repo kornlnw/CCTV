@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { PackageVisual } from "@/components/PackageVisual";
 
+type Variant = { channels: string; price: number; oldPrice: number };
+
 type Pkg = {
   cameras: number;
   title: string;
   subtitle: string;
-  channels: string;
   hdd: string;
-  price: number;
-  oldPrice: number;
+  dvr: Variant;
+  nvr: Variant;
   highlight?: boolean;
   tag?: string;
 };
@@ -18,20 +19,18 @@ const PACKAGES: Pkg[] = [
     cameras: 4,
     title: "แพ็คเกจ 4 ตัว",
     subtitle: "เหมาะกับบ้านหรือร้านขนาดเล็ก",
-    channels: "DVR/NVR 4CH",
     hdd: "HDD 1TB",
-    price: 8990,
-    oldPrice: 12500,
+    dvr: { channels: "DVR 4CH", price: 8990, oldPrice: 12500 },
+    nvr: { channels: "NVR 4CH (PoE)", price: 12900, oldPrice: 17900 },
     tag: "เริ่มต้น",
   },
   {
     cameras: 8,
     title: "แพ็คเกจ 8 ตัว",
     subtitle: "เหมาะกับบ้านใหญ่หรือร้านค้า",
-    channels: "DVR/NVR 8CH",
     hdd: "HDD 1TB",
-    price: 14900,
-    oldPrice: 19500,
+    dvr: { channels: "DVR 8CH", price: 14900, oldPrice: 19500 },
+    nvr: { channels: "NVR 8CH (PoE)", price: 20900, oldPrice: 27500 },
     highlight: true,
     tag: "ขายดี",
   },
@@ -39,20 +38,18 @@ const PACKAGES: Pkg[] = [
     cameras: 12,
     title: "แพ็คเกจ 12 ตัว",
     subtitle: "เหมาะกับสำนักงานหรือธุรกิจ",
-    channels: "DVR/NVR 16CH",
     hdd: "HDD 2TB",
-    price: 22900,
-    oldPrice: 29500,
+    dvr: { channels: "DVR 16CH", price: 22900, oldPrice: 29500 },
+    nvr: { channels: "NVR 16CH (PoE)", price: 31900, oldPrice: 41500 },
     tag: "ธุรกิจ",
   },
   {
     cameras: 16,
     title: "แพ็คเกจ 16 ตัว",
     subtitle: "เหมาะกับโรงงานหรือโกดัง",
-    channels: "DVR/NVR 16CH",
     hdd: "HDD 2TB",
-    price: 29900,
-    oldPrice: 39500,
+    dvr: { channels: "DVR 16CH", price: 29900, oldPrice: 39500 },
+    nvr: { channels: "NVR 16CH (PoE)", price: 41900, oldPrice: 54500 },
     tag: "องค์กร",
   },
 ];
@@ -161,9 +158,9 @@ export function PackagesGrid() {
 }
 
 function PackageCard({ pkg }: { pkg: Pkg }) {
-  const discount = Math.round(((pkg.oldPrice - pkg.price) / pkg.oldPrice) * 100);
-  const price = pkg.price.toLocaleString("th-TH");
-  const oldPrice = pkg.oldPrice.toLocaleString("th-TH");
+  const dvrDiscount = Math.round(
+    ((pkg.dvr.oldPrice - pkg.dvr.price) / pkg.dvr.oldPrice) * 100
+  );
 
   return (
     <div
@@ -194,7 +191,7 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
             <p className="mt-0.5 text-xs text-slate-500">{pkg.subtitle}</p>
           </div>
           <span className="rounded-2xl bg-red-500 px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
-            -{discount}%
+            -{dvrDiscount}%
           </span>
         </div>
 
@@ -220,10 +217,10 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
             <span className="font-bold">{pkg.cameras} ตัว</span>
           </Item>
           <Item bold>
-            <span className="text-slate-700">{pkg.channels}</span>
+            <span className="text-slate-700">{pkg.hdd}</span>
           </Item>
           <Item bold>
-            <span className="text-slate-700">{pkg.hdd}</span>
+            <span className="text-slate-700">เลือกได้ DVR หรือ NVR</span>
           </Item>
         </ul>
 
@@ -272,19 +269,14 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
           </ul>
         </div>
 
-        {/* Price */}
-        <div className="mt-5 flex items-end justify-between">
-          <div>
-            <div className="text-[11px] text-slate-500 line-through">
-              ปกติ ฿{oldPrice}
-            </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-black text-slate-900 sm:text-4xl">
-                ฿{price}
-              </span>
-            </div>
-            <div className="text-[10px] text-slate-500">รวมติดตั้ง · VAT แล้ว</div>
+        {/* Price comparison: DVR vs NVR */}
+        <div className="mt-5 space-y-2">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            เลือกแบบที่ใช่
           </div>
+          <PriceRow label="DVR" sub={pkg.dvr.channels} variant={pkg.dvr} tone="slate" />
+          <PriceRow label="NVR" sub={pkg.nvr.channels} variant={pkg.nvr} tone="brand" />
+          <p className="pt-1 text-[10px] text-slate-500">รวมติดตั้ง · VAT แล้ว</p>
         </div>
 
         {/* CTAs */}
@@ -310,6 +302,56 @@ function PackageCard({ pkg }: { pkg: Pkg }) {
             </svg>
           </Link>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function PriceRow({
+  label,
+  sub,
+  variant,
+  tone,
+}: {
+  label: string;
+  sub: string;
+  variant: Variant;
+  tone: "slate" | "brand";
+}) {
+  const price = variant.price.toLocaleString("th-TH");
+  const oldPrice = variant.oldPrice.toLocaleString("th-TH");
+  const isBrand = tone === "brand";
+  return (
+    <div
+      className={`flex items-center justify-between rounded-2xl border px-3 py-2.5 ${
+        isBrand
+          ? "border-brand-200 bg-brand-50/60"
+          : "border-slate-200 bg-slate-50"
+      }`}
+    >
+      <div className="flex items-center gap-2.5">
+        <div
+          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl text-[10px] font-black ${
+            isBrand
+              ? "bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow"
+              : "bg-slate-900 text-white"
+          }`}
+        >
+          {label}
+        </div>
+        <div className="min-w-0">
+          <div className="text-[11px] font-semibold text-slate-700">{sub}</div>
+          <div className="text-[10px] text-slate-400 line-through">
+            ฿{oldPrice}
+          </div>
+        </div>
+      </div>
+      <div
+        className={`text-xl font-black tracking-tight sm:text-2xl ${
+          isBrand ? "text-brand-700" : "text-slate-900"
+        }`}
+      >
+        ฿{price}
       </div>
     </div>
   );
