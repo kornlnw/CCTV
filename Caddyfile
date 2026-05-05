@@ -1,0 +1,24 @@
+# Replace with your actual domain.
+# Caddy auto-issues a Let's Encrypt cert and renews it.
+{$DOMAIN} {
+    encode zstd gzip
+
+    # Block direct access to sensitive paths
+    @blocked {
+        path /.env*
+        path /docker-compose*
+        path /Dockerfile
+    }
+    respond @blocked 404
+
+    reverse_proxy app:3000 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    log {
+        output stdout
+        format console
+    }
+}

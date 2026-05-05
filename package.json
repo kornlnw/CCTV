@@ -8,8 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "docker:build": "docker compose -f docker-compose.prod.yml build",
+    "docker:up": "docker compose -f docker-compose.prod.yml up -d",
+    "docker:down": "docker compose -f docker-compose.prod.yml down",
+    "docker:logs": "docker compose -f docker-compose.prod.yml logs -f"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.94.0",
