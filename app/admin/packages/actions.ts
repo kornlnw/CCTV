@@ -17,6 +17,7 @@ function parse(formData: FormData) {
   const featuresRaw = String(formData.get("features") ?? "");
   const features = featuresRaw.split("\n").map((s) => s.trim()).filter(Boolean);
   const active = formData.get("active") === "on";
+  const imageUrl = String(formData.get("imageUrl") ?? "").trim() || null;
   if (!name || !description) throw new Error("Name and description are required");
   return {
     name,
@@ -27,6 +28,7 @@ function parse(formData: FormData) {
     price,
     installationFee,
     features,
+    imageUrl,
     active,
   };
 }

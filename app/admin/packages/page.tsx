@@ -19,7 +19,7 @@ export default async function PackagesPage() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr>
-              <th className="p-3">Name</th><th className="p-3">For</th><th className="p-3">Cameras</th>
+              <th className="p-3"></th><th className="p-3">Name</th><th className="p-3">For</th><th className="p-3">Cameras</th>
               <th className="p-3">Price</th><th className="p-3">Install fee</th>
               <th className="p-3">Status</th><th className="p-3"></th>
             </tr>
@@ -27,6 +27,9 @@ export default async function PackagesPage() {
           <tbody>
             {packages.map((p) => (
               <tr key={p.id} className="border-t">
+                <td className="p-3">
+                  {p.imageUrl ? <img src={p.imageUrl} alt="" className="h-12 w-16 rounded object-cover" /> : <div className="h-12 w-16 rounded bg-gray-100" />}
+                </td>
                 <td className="p-3"><Link href={`/admin/packages/${p.id}`} className="font-medium text-blue-600 hover:underline">{p.name}</Link><div className="text-xs text-gray-500 max-w-md">{p.description}</div></td>
                 <td className="p-3 text-xs">{p.recommendedFor}</td>
                 <td className="p-3">{p.cameraCount}</td>
@@ -50,7 +53,7 @@ export default async function PackagesPage() {
                 </td>
               </tr>
             ))}
-            {packages.length === 0 && <tr><td colSpan={7} className="p-6 text-center text-gray-500">No packages yet — click "+ New package" or run <code>npm run db:seed</code>.</td></tr>}
+            {packages.length === 0 && <tr><td colSpan={8} className="p-6 text-center text-gray-500">No packages yet — click "+ New package" or run <code>npm run db:seed</code>.</td></tr>}
           </tbody>
         </table>
       </div>

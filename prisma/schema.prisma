@@ -188,6 +188,7 @@ model InstallPackage {
   price           Decimal  @db.Decimal(10, 2)
   installationFee Decimal  @db.Decimal(10, 2) @default(0)
   features        String[]
+  imageUrl        String?
   active          Boolean  @default(true)
   createdAt       DateTime @default(now())
 }
