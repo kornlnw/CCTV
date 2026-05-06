@@ -1,9 +1,7 @@
-# Replace with your actual domain.
-# Caddy auto-issues a Let's Encrypt cert and renews it.
+# Apex domain — main site, served by the Next.js app
 {$DOMAIN} {
     encode zstd gzip
 
-    # Block direct access to sensitive paths
     @blocked {
         path /.env*
         path /docker-compose*
@@ -21,4 +19,9 @@
         output stdout
         format console
     }
+}
+
+# www.* — permanent redirect to the apex domain
+www.{$DOMAIN} {
+    redir https://{$DOMAIN}{uri} permanent
 }
