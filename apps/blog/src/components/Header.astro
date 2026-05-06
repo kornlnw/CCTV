@@ -1,0 +1,85 @@
+---
+import Logo from "./Logo.astro";
+
+const SITE = "https://trustcambro.com";
+const NAV = [
+  { href: `${SITE}/`, label: "หน้าแรก" },
+  { href: `${SITE}/products`, label: "สินค้า" },
+  { href: `${SITE}/guide`, label: "แนะนำ" },
+  { href: `${SITE}/services`, label: "บริการ" },
+  { href: `${SITE}/about`, label: "เกี่ยวกับเรา" },
+  { href: "/blog", label: "บล็อก" },
+  { href: `${SITE}/contact`, label: "ติดต่อ" },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
+  <div class="container-x flex h-16 items-center justify-between">
+    <a href={`${SITE}/`} aria-label="Trustcam">
+      <Logo size="md" />
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex">
+      {
+        NAV.map((item) => {
+          const active = item.href.endsWith("/blog") && currentPath.startsWith("/blog");
+          return (
+            <a
+              href={item.href}
+              class={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                active ? "bg-brand-900 text-white" : "text-slate-700 hover:bg-brand-50"
+              }`}
+            >
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href="https://line.me/R/ti/p/@securesight"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden items-center gap-1.5 rounded-full bg-[#06C755] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#06C755]/25 transition hover:opacity-90 sm:inline-flex"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+          <path d="M19.4 10.6c0-3.4-3.4-6.1-7.6-6.1S4.2 7.2 4.2 10.6c0 3 2.7 5.5 6.4 6 .2 0 .6.2.7.4.1.2.1.5 0 .7l-.1.6c0 .2-.2.7.6.4 1.2-.5 6.6-3.9 7-7.1z" />
+        </svg>
+        LINE
+      </a>
+      <button
+        type="button"
+        aria-label="เปิดเมนู"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-900 text-white md:hidden"
+        data-menu-toggle
+      >
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div class="hidden md:hidden" data-mobile-menu>
+    <div class="border-t border-slate-200 bg-white px-3 py-3">
+      <nav class="flex flex-col">
+        {NAV.map((item) => (
+          <a href={item.href} class="rounded-2xl px-4 py-3 text-base font-medium text-slate-700 hover:bg-brand-50">
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector("[data-menu-toggle]");
+  const menu = document.querySelector("[data-mobile-menu]");
+  btn?.addEventListener("click", () => menu?.classList.toggle("hidden"));
+</script>

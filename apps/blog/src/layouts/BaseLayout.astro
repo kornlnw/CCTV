@@ -1,0 +1,41 @@
+---
+import "../styles/global.css";
+import SEO from "../components/SEO.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  author?: string;
+  tags?: string[];
+}
+
+const { title, description, image, type, publishedTime, modifiedTime, author, tags } = Astro.props;
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/blog/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Trustcam Blog" href="/blog/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Kanit:wght@400;500;600;700&display=swap" />
+    <SEO {title} {description} {image} {type} {publishedTime} {modifiedTime} {author} {tags} />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-screen bg-white">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

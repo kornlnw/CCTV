@@ -1,4 +1,4 @@
-# Apex domain — main site, served by the Next.js app
+# ─── Apex domain ──────────────────────────────────────────────
 {$DOMAIN} {
     encode zstd gzip
 
@@ -9,10 +9,22 @@
     }
     respond @blocked 404
 
-    reverse_proxy app:3000 {
-        header_up X-Real-IP {remote_host}
-        header_up X-Forwarded-For {remote_host}
-        header_up X-Forwarded-Proto {scheme}
+    # Astro blog — static files baked at deploy, served straight from disk
+    handle /blog* {
+        root * /srv/blog-dist
+        try_files {path} {path}/ /blog/index.html
+        file_server
+        header Cache-Control "public, max-age=300, s-maxage=3600"
+        header /blog/_astro/* Cache-Control "public, max-age=31536000, immutable"
+    }
+
+    # Everything else → Next.js app
+    handle {
+        reverse_proxy app:3000 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 
     log {
@@ -21,7 +33,7 @@
     }
 }
 
-# www.* — permanent redirect to the apex domain
+# ─── www → apex redirect ──────────────────────────────────────
 www.{$DOMAIN} {
     redir https://{$DOMAIN}{uri} permanent
 }

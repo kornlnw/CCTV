@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "./BaseLayout.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, tags, author } = post.data;
+
+const dateFmt = new Intl.DateTimeFormat("th-TH", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+  author={author}
+  tags={tags}
+>
+  <article class="container-x mx-auto max-w-3xl py-10 md:py-14">
+    <nav class="mb-6 text-sm text-slate-500">
+      <a href="/blog" class="hover:text-brand-700">บล็อก</a>
+      <span class="mx-2">/</span>
+      <span class="text-slate-700">{title}</span>
+    </nav>
+
+    <header class="mb-8">
+      <div class="mb-3 flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <a href={`/blog/tags/${tag}`} class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100">
+            #{tag}
+          </a>
+        ))}
+      </div>
+      <h1 class="text-4xl font-bold leading-tight text-slate-900 md:text-5xl">{title}</h1>
+      <p class="mt-3 text-lg text-slate-600">{description}</p>
+      <div class="mt-4 flex items-center gap-3 text-sm text-slate-500">
+        <span>โดย {author}</span>
+        <span>·</span>
+        <time datetime={pubDate.toISOString()}>{dateFmt.format(pubDate)}</time>
+        {updatedDate && (
+          <>
+            <span>·</span>
+            <span>อัปเดต {dateFmt.format(updatedDate)}</span>
+          </>
+        )}
+      </div>
+    </header>
+
+    {heroImage && (
+      <div class="mb-8 overflow-hidden rounded-2xl">
+        <Image src={heroImage} alt={heroImageAlt ?? title} class="h-auto w-full" widths={[400, 800, 1200]} sizes="(max-width: 768px) 100vw, 768px" />
+      </div>
+    )}
+
+    <div class="prose prose-slate max-w-none prose-headings:font-display prose-a:text-brand-700 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
+      <slot />
+    </div>
+
+    <footer class="mt-12 border-t border-slate-200 pt-8">
+      <div class="rounded-2xl bg-brand-50 p-6">
+        <h3 class="font-display text-xl font-bold text-brand-900">สนใจติดตั้งกล้องวงจรปิด?</h3>
+        <p class="mt-2 text-sm text-slate-700">ทีมผู้เชี่ยวชาญพร้อมให้คำปรึกษาฟรี ประเมินหน้างาน และเสนอราคาภายในวันเดียว</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a href="https://line.me/R/ti/p/@securesight" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-[#06C755] px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:opacity-90">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor"><path d="M19.4 10.6c0-3.4-3.4-6.1-7.6-6.1S4.2 7.2 4.2 10.6c0 3 2.7 5.5 6.4 6 .2 0 .6.2.7.4.1.2.1.5 0 .7l-.1.6c0 .2-.2.7.6.4 1.2-.5 6.6-3.9 7-7.1z"/></svg>
+            ปรึกษาฟรีทาง LINE
+          </a>
+          <a href="https://trustcambro.com/products" class="inline-flex items-center rounded-full border border-brand-700 bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 hover:bg-brand-50">
+            ดูสินค้าทั้งหมด
+          </a>
+        </div>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

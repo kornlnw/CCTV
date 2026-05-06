@@ -54,6 +54,7 @@ export function Footer() {
             <li><Link href="/about" className="hover:text-white">เกี่ยวกับเรา</Link></li>
             <li><Link href="/guide" className="hover:text-white">แนะนำการเลือกซื้อ</Link></li>
             <li><Link href="/services" className="hover:text-white">บริการติดตั้ง</Link></li>
+            <li><a href="/blog" className="hover:text-white">บล็อก</a></li>
             <li><Link href="/contact" className="hover:text-white">ติดต่อเรา</Link></li>
           </ul>
         </div>

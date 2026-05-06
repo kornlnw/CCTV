@@ -10,6 +10,7 @@ const NAV = [
   { href: "/products", label: "สินค้า" },
   { href: "/guide", label: "แนะนำ" },
   { href: "/services", label: "บริการ" },
+  { href: "/blog", label: "บล็อก", external: true },
   { href: "/about", label: "เกี่ยวกับเรา" },
   { href: "/contact", label: "ติดต่อ" },
 ];
@@ -51,18 +52,13 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 md:flex">
           {NAV.map((item) => {
             const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  active
-                    ? "bg-brand-900 text-white"
-                    : "text-slate-700 hover:bg-brand-50"
-                }`}
-              >
-                {item.label}
-              </Link>
+            const className = `rounded-full px-4 py-2 text-sm font-medium transition ${
+              active ? "bg-brand-900 text-white" : "text-slate-700 hover:bg-brand-50"
+            }`;
+            return item.external ? (
+              <a key={item.href} href={item.href} className={className}>{item.label}</a>
+            ) : (
+              <Link key={item.href} href={item.href} className={className}>{item.label}</Link>
             );
           })}
         </nav>
@@ -121,21 +117,21 @@ export function Navbar() {
           <nav className="flex flex-col p-3">
             {NAV.map((item) => {
               const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition ${
-                    active
-                      ? "bg-brand-900 text-white"
-                      : "text-slate-700 hover:bg-brand-50"
-                  }`}
-                >
+              const className = `flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition ${
+                active ? "bg-brand-900 text-white" : "text-slate-700 hover:bg-brand-50"
+              }`;
+              const inner = (
+                <>
                   {item.label}
                   <svg viewBox="0 0 24 24" className="h-4 w-4 opacity-60" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </Link>
+                </>
+              );
+              return item.external ? (
+                <a key={item.href} href={item.href} className={className}>{inner}</a>
+              ) : (
+                <Link key={item.href} href={item.href} className={className}>{inner}</Link>
               );
             })}
             <div className="mt-2 grid grid-cols-2 gap-2 p-1">

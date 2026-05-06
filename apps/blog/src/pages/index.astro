@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p.id !== featured?.id);
+
+const dateFmt = new Intl.DateTimeFormat("th-TH", { year: "numeric", month: "short", day: "numeric" });
+---
+
+<BaseLayout
+  title="บล็อก Trustcam — ความรู้กล้องวงจรปิด CCTV"
+  description="บทความ ข่าวสาร และคู่มือเลือกซื้อกล้องวงจรปิด CCTV จากผู้เชี่ยวชาญ Trustcam ครอบคลุมการติดตั้ง การดูแลรักษา และเทคโนโลยีล่าสุด"
+>
+  <section class="bg-gradient-to-b from-brand-50 to-white">
+    <div class="container-x py-12 md:py-20">
+      <p class="text-sm font-semibold uppercase tracking-widest text-brand-700">บล็อก</p>
+      <h1 class="mt-2 font-display text-4xl font-black leading-tight text-slate-900 md:text-6xl">
+        ความรู้และคู่มือ<br />กล้องวงจรปิด CCTV
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-slate-600">
+        บทความจากผู้เชี่ยวชาญด้านระบบรักษาความปลอดภัย — เลือกกล้อง ติดตั้ง ดูแลรักษา และอัปเดตเทคโนโลยีใหม่ ๆ
+      </p>
+    </div>
+  </section>
+
+  <section class="container-x py-10 md:py-14">
+    {featured && (
+      <a href={`/blog/${featured.id}`} class="group mb-12 grid gap-6 md:grid-cols-2 md:gap-10">
+        {featured.data.heroImage && (
+          <div class="overflow-hidden rounded-2xl">
+            <Image src={featured.data.heroImage} alt={featured.data.heroImageAlt ?? featured.data.title} class="h-full w-full object-cover transition group-hover:scale-105" widths={[400, 800]} />
+          </div>
+        )}
+        <div class="flex flex-col justify-center">
+          <span class="text-xs font-semibold uppercase tracking-widest text-brand-700">บทความแนะนำ</span>
+          <h2 class="mt-2 font-display text-3xl font-bold text-slate-900 group-hover:text-brand-700 md:text-4xl">{featured.data.title}</h2>
+          <p class="mt-3 text-slate-600">{featured.data.description}</p>
+          <div class="mt-3 text-sm text-slate-500">{dateFmt.format(featured.data.pubDate)}</div>
+        </div>
+      </a>
+    )}
+
+    {rest.length > 0 && (
+      <>
+        <h2 class="mb-6 font-display text-2xl font-bold text-slate-900">บทความทั้งหมด</h2>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {rest.map((post) => (
+            <a href={`/blog/${post.id}`} class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:shadow-lg">
+              {post.data.heroImage && (
+                <div class="aspect-[16/9] overflow-hidden bg-slate-100">
+                  <Image src={post.data.heroImage} alt={post.data.heroImageAlt ?? post.data.title} class="h-full w-full object-cover transition group-hover:scale-105" widths={[400, 600]} />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col p-5">
+                <div class="mb-2 flex flex-wrap gap-1.5">
+                  {post.data.tags.slice(0, 2).map((tag) => (
+                    <span class="rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-medium text-brand-700">#{tag}</span>
+                  ))}
+                </div>
+                <h3 class="font-display text-lg font-bold text-slate-900 group-hover:text-brand-700">{post.data.title}</h3>
+                <p class="mt-2 line-clamp-2 text-sm text-slate-600">{post.data.description}</p>
+                <div class="mt-auto pt-3 text-xs text-slate-500">{dateFmt.format(post.data.pubDate)}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </>
+    )}
+
+    {posts.length === 0 && (
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
+        <p class="text-slate-500">ยังไม่มีบทความ — เริ่มเขียนใน <code class="rounded bg-slate-200 px-2 py-0.5">apps/blog/src/content/blog/</code></p>
+      </div>
+    )}
+  </section>
+</BaseLayout>
